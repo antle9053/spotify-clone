@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Lexend as FontSans } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/_lib/utils";
 import StoreProvider from "./StoreProvider";
+import { Sidebar } from "./_components/layout/Sidebar";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -23,11 +24,13 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          "min-h-screen h-screen bg-black font-sans antialiased",
+          fontSans.variable,
         )}
       >
-        <StoreProvider>{children}</StoreProvider>
+        <StoreProvider>
+          <Sidebar>{children}</Sidebar>
+        </StoreProvider>
       </body>
     </html>
   );

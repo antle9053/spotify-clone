@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/app/_lib/utils";
 import StoreProvider from "./StoreProvider";
 import { Sidebar } from "./_components/layout/Sidebar";
+import { SupabaseProvider } from "@/app/_providers/SupabaseProvider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -28,9 +29,11 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <StoreProvider>
-          <Sidebar>{children}</Sidebar>
-        </StoreProvider>
+        <SupabaseProvider>
+          <StoreProvider>
+            <Sidebar>{children}</Sidebar>
+          </StoreProvider>
+        </SupabaseProvider>
       </body>
     </html>
   );

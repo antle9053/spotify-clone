@@ -27,12 +27,12 @@ export const Sidebar: FC<SidebarProps> = ({ children }) => {
         icon: Search,
       },
     ],
-    [pathname],
+    [pathname]
   );
 
   return (
-    <div className="flex h-full">
-      <div className="hidden md:flex flex-col gap-y-2 h-full w-[300px] p-2">
+    <div className="flex h-full w-full p-2">
+      <div className="hidden md:flex flex-col gap-y-2 h-full w-[300px] pr-2">
         <div className="bg-neutral-900 rounded-lg h-fit w-full">
           <div className="flex flex-col gap-y-4 px-5 py-4">
             {routes.map((route, index) => (
@@ -50,7 +50,7 @@ export const Sidebar: FC<SidebarProps> = ({ children }) => {
           Song library
         </div>
       </div>
-      <main>{children}</main>
+      <main className="flex-grow">{children}</main>
     </div>
   );
 };

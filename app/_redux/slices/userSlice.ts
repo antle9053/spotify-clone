@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { User } from "@supabase/auth-helpers-nextjs";
 import Stripe from "stripe";
 
-interface UserDetails {
+export interface UserDetails {
   id: string;
   first_name: string;
   last_name: string;
@@ -13,7 +13,7 @@ interface UserDetails {
   payment_method?: Stripe.PaymentMethod[Stripe.PaymentMethod.Type];
 }
 
-interface UserState {
+export interface UserState {
   accessToken: string | null;
   user: User | null;
   userDetails: UserDetails | null;

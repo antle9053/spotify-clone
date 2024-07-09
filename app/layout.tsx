@@ -26,7 +26,7 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen h-screen bg-black font-sans antialiased",
-          fontSans.variable,
+          fontSans.variable
         )}
       >
         <SupabaseProvider>

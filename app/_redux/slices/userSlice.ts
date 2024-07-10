@@ -14,24 +14,28 @@ export interface UserDetails {
 }
 
 export interface UserState {
-  accessToken: string | null;
-  user: User | null;
   userDetails: UserDetails | null;
-  isLoading: boolean;
 }
 
 const initialState = {
-  accessToken: null,
-  user: null,
   userDetails: null,
-  isLoading: false,
 } satisfies UserState as UserState;
 
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setUserDetails: (
+      state: UserState,
+      action: PayloadAction<UserDetails | null>
+    ) => {
+      state.userDetails = action.payload;
+    },
+    logOut: (state: UserState) => {
+      state.userDetails = null;
+    },
+  },
 });
 
-export const {} = userSlice.actions;
+export const { setUserDetails, logOut } = userSlice.actions;
 export default userSlice.reducer;

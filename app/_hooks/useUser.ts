@@ -4,13 +4,12 @@ import {
   useSessionContext,
   useUser as useSupaUser,
 } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
-import { UserDetails } from "../_redux/slices/userSlice";
+import { useCallback, useState } from "react";
+import { logOut, setUserDetails } from "../_redux/slices/userSlice";
 import { useRouter } from "next/navigation";
-
-export const a = () => {
-  return 1;
-};
+import { useAppDispatch, useAppSelector } from "../_redux/hooks";
+import { RootState } from "../_redux/store";
+import { useToast } from "../_components/ui/use-toast";
 
 export const useUser = () => {
   const {
@@ -21,13 +20,18 @@ export const useUser = () => {
   const accessToken = session?.access_token ?? null;
   const user = useSupaUser();
   const [isLoadingData, setIsLoadingData] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const userDetails = useAppSelector(
+    (state: RootState) => state.user.userDetails
+  );
+
+  const { toast } = useToast();
 
   const getUserDetails = () =>
     supabaseClient.from("users").select("*").single();
 
-  useEffect(() => {
+  const fetchUserDetails = useCallback(async () => {
     if (user && !isLoadingData && !userDetails) {
       setIsLoadingData(true);
 
@@ -35,20 +39,26 @@ export const useUser = () => {
         const userDetailResponse = results[0];
 
         if (userDetailResponse.status === "fulfilled") {
-          setUserDetails(userDetailResponse.value.data);
+          dispatch(setUserDetails(userDetailResponse.value.data));
         }
       });
     } else if (!user && !isLoadingData && !isLoadingUser) {
-      setUserDetails(null);
+      dispatch(setUserDetails(null));
     }
   }, [user, isLoadingUser]);
 
   const handleLogout = async () => {
     const { error } = await supabaseClient.auth.signOut();
+    dispatch(logOut());
 
     router.refresh();
 
     if (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
     }
   };
 
@@ -59,5 +69,6 @@ export const useUser = () => {
     isLoading: isLoadingData || isLoadingUser,
     supabaseClient,
     handleLogout,
+    fetchUserDetails,
   };
 };

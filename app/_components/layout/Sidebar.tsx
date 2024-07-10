@@ -2,8 +2,9 @@
 
 import { Home, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { FC, ReactNode, useMemo } from "react";
+import { FC, ReactNode, useEffect, useMemo } from "react";
 import { SidebarItem } from "@/app/_components/others/SidebarItem";
+import { useUser } from "@/app/_hooks/useUser";
 
 type SidebarProps = {
   children: ReactNode;
@@ -29,6 +30,12 @@ export const Sidebar: FC<SidebarProps> = ({ children }) => {
     ],
     [pathname]
   );
+
+  const { fetchUserDetails } = useUser();
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
 
   return (
     <div className="flex h-full w-full p-2">

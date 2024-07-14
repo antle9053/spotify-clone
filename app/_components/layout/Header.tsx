@@ -14,9 +14,16 @@ interface HeaderProps {
 
 export const Header: FC<HeaderProps> = ({ children, className }) => {
   const { user, handleLogout } = useUser();
+
   return (
-    <div className={cn("h-fit bg-gradient-to-b from-slate-600 p-6", className)}>
-      <div className="w-full mb-4 flex items-center justify-between">
+    <div
+      id="header"
+      className={cn(
+        "h-fit bg-gradient-to-b from-slate-600 scrollbar",
+        className
+      )}
+    >
+      <div className="w-full mb-4 flex items-center justify-between sticky top-0 left-0 p-6 pb-0">
         <div className="hidden md:flex gap-x-2 items-center">
           <Button size="icon" className="rounded-full">
             <ChevronLeft color="white" />
@@ -58,7 +65,7 @@ export const Header: FC<HeaderProps> = ({ children, className }) => {
           </>
         )}
       </div>
-      {children}
+      <div className="p-6 pt-0">{children}</div>
     </div>
   );
 };

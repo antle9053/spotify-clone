@@ -9,6 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      artist: {
+        Row: {
+          artist_name: string | null
+          created_at: string
+          id: string
+          updated_song_ids: string | null
+        }
+        Insert: {
+          artist_name?: string | null
+          created_at?: string
+          id?: string
+          updated_song_ids?: string | null
+        }
+        Update: {
+          artist_name?: string | null
+          created_at?: string
+          id?: string
+          updated_song_ids?: string | null
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           id: string
@@ -138,37 +159,37 @@ export type Database = {
       songs: {
         Row: {
           author: string | null
+          author_id: string | null
           created_at: string
           id: string
           song_path: string | null
           thumbnail_path: string | null
           title: string | null
-          user_id: string | null
         }
         Insert: {
           author?: string | null
+          author_id?: string | null
           created_at?: string
           id?: string
           song_path?: string | null
           thumbnail_path?: string | null
           title?: string | null
-          user_id?: string | null
         }
         Update: {
           author?: string | null
+          author_id?: string | null
           created_at?: string
           id?: string
           song_path?: string | null
           thumbnail_path?: string | null
           title?: string | null
-          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "songs_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "songs_author_id_fkey"
+            columns: ["author_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "artist"
             referencedColumns: ["id"]
           },
         ]
@@ -248,6 +269,7 @@ export type Database = {
           billing_address: Json | null
           full_name: string | null
           id: string
+          is_artist: boolean
           payment_method: Json | null
         }
         Insert: {
@@ -255,6 +277,7 @@ export type Database = {
           billing_address?: Json | null
           full_name?: string | null
           id: string
+          is_artist?: boolean
           payment_method?: Json | null
         }
         Update: {
@@ -262,6 +285,7 @@ export type Database = {
           billing_address?: Json | null
           full_name?: string | null
           id?: string
+          is_artist?: boolean
           payment_method?: Json | null
         }
         Relationships: [

@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { ChevronLeft, ChevronRight, Home, Search, User } from "lucide-react";
 import { AuthDialog } from "../others/AuthModal";
 import { useUser } from "@/app/_hooks/useUser";
+import { AccountDropdownMenu } from "@/app/_components/others/AccountDropdownMenu";
 
 interface HeaderProps {
   children: ReactNode;
@@ -20,7 +21,7 @@ export const Header: FC<HeaderProps> = ({ children, className }) => {
       id="header"
       className={cn(
         "h-fit bg-gradient-to-b from-slate-600 scrollbar",
-        className
+        className,
       )}
     >
       <div className="w-full mb-4 flex items-center justify-between sticky top-0 left-0 p-6 pb-0">
@@ -46,9 +47,17 @@ export const Header: FC<HeaderProps> = ({ children, className }) => {
             <Button variant="secondary" onClick={handleLogout}>
               Log out
             </Button>
-            <Button size="icon" variant="secondary" className="rounded-full">
-              <User color="black" />
-            </Button>
+            <AccountDropdownMenu
+              triggerElement={
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="rounded-full"
+                >
+                  <User color="black" />
+                </Button>
+              }
+            />
           </div>
         ) : (
           <>

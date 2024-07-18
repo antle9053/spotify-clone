@@ -16,9 +16,8 @@ import {
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
 import { Textarea } from "@/app/_components/ui/textarea";
-import { useDropzone } from "react-dropzone";
-import { useCallback, useState } from "react";
-import Image from "next/image";
+import { InputSingleFile } from "@/app/_components/others/InputSingleFile";
+import { useArtistProfile } from "@/app/_hooks/useArtistProfile";
 
 const MAX_UPLOAD_SIZE = 1024 * 1024 * 2; // 2MB
 
@@ -26,15 +25,14 @@ const formSchema = z.object({
   username: z.string().min(2).max(50),
   about: z.string().optional(),
   cover: z
-    .instanceof(Array<File>)
+    .instanceof(File)
     .optional()
     .refine((file) => {
-      return !file?.[0] || file?.[0].size <= MAX_UPLOAD_SIZE;
+      return !file || file.size <= MAX_UPLOAD_SIZE;
     }, "File size must be less than 3MB"),
 });
 
 export default function ArtistProfilePage() {
-  const [preview, setPreview] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,25 +42,11 @@ export default function ArtistProfilePage() {
     },
   });
 
-  const coverRef = form.register("cover");
+  const { updateProfile } = useArtistProfile();
 
-  const onDrop = useCallback((acceptedFiles: any) => {
-    const preview = URL.createObjectURL(
-      acceptedFiles?.[0] as Blob | MediaSource
-    );
-    console.log(preview);
-    setPreview(preview);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: { "image/*": [] },
-    multiple: false,
-    onDrop,
-  });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    await updateProfile(values);
+  };
 
   return (
     <div>
@@ -120,38 +104,15 @@ export default function ArtistProfilePage() {
               <FormItem>
                 <FormLabel className="text-white">Cover image</FormLabel>
                 <FormControl>
-                  <div
-                    className="w-full h-[300px] border border-solid border-white/20 rounded-md p-2"
-                    {...getRootProps()}
-                  >
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      multiple={false}
-                      {...getInputProps()}
-                      {...coverRef}
-                    />
-                    {preview ? (
-                      <Image
-                        src={preview}
-                        alt="Cover image preview"
-                        width={0}
-                        height={0}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-full w-full flex items-center justify-center border border-dashed border-white/30">
-                        <p className="text-muted-foreground text-sm">
-                          Drag and drop some files here, or click to select
-                          files
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                  <InputSingleFile
+                    accept="image/*"
+                    setValue={(value) => form.setValue("cover", value)}
+                    className="w-full h-[300px]"
+                    {...field}
+                    {...form.register("cover")}
+                  />
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
-                </FormDescription>
+                <FormDescription>This is your cover image.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

@@ -28,14 +28,14 @@ export const Sidebar: FC<SidebarProps> = ({ children }) => {
         icon: Search,
       },
     ],
-    [pathname]
+    [pathname],
   );
 
   const { fetchUserDetails } = useUser();
 
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  }, [fetchUserDetails]);
 
   return (
     <div className="flex h-full w-full p-2">

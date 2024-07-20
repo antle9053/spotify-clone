@@ -108,8 +108,6 @@ export default function ArtistProfilePage() {
                     accept="image/*"
                     setValue={(value) => form.setValue("cover", value)}
                     className="w-full h-[300px]"
-                    {...field}
-                    {...form.register("cover")}
                   />
                 </FormControl>
                 <FormDescription>This is your cover image.</FormDescription>

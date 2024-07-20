@@ -23,7 +23,7 @@ export const useUser = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const userDetails = useAppSelector(
-    (state: RootState) => state.user.userDetails
+    (state: RootState) => state.user.userDetails,
   );
 
   const { toast } = useToast();
@@ -35,17 +35,22 @@ export const useUser = () => {
     if (user && !isLoadingData && !userDetails) {
       setIsLoadingData(true);
 
-      Promise.allSettled([getUserDetails()]).then((results) => {
-        const userDetailResponse = results[0];
+      Promise.allSettled([getUserDetails()])
+        .then((results) => {
+          const userDetailResponse = results[0];
 
-        if (userDetailResponse.status === "fulfilled") {
-          dispatch(setUserDetails(userDetailResponse.value.data));
-        }
-      });
+          if (userDetailResponse.status === "fulfilled") {
+            dispatch(setUserDetails(userDetailResponse.value.data));
+          }
+        })
+        .finally(() => {
+          setIsLoadingData(false);
+        });
     } else if (!user && !isLoadingData && !isLoadingUser) {
       dispatch(setUserDetails(null));
+    } else {
     }
-  }, [user, isLoadingUser]);
+  }, [user, isLoadingUser, isLoadingData]);
 
   const handleLogout = async () => {
     const { error } = await supabaseClient.auth.signOut();

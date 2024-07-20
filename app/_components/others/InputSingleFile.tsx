@@ -8,7 +8,6 @@ interface InputSingleFileProps {
   accept: string;
   setValue: (value: any) => void;
   defaultValue?: string;
-  [key: string]: any;
 }
 
 export const InputSingleFile: FC<InputSingleFileProps> = ({
@@ -16,7 +15,6 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
   className,
   setValue,
   defaultValue,
-  ...rest
 }) => {
   const [preview, setPreview] = useState<string>(defaultValue ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -48,7 +46,6 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
             setPreview(preview);
           }
         }}
-        {...rest}
       ></Input>
       {preview ? (
         <Image

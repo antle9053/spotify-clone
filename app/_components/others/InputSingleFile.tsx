@@ -42,7 +42,12 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
           const file = event.target.files?.[0];
           if (file) {
             setValue(file);
-            const preview = URL.createObjectURL(file as Blob | MediaSource);
+            let preview = "";
+            if (accept.includes("image")) {
+              preview = URL.createObjectURL(file as Blob | MediaSource);
+            } else {
+              preview = "/images/music-placeholder.png";
+            }
             setPreview(preview);
           }
         }}
@@ -51,8 +56,8 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
         <Image
           src={preview}
           alt="Cover image preview"
-          width={0}
-          height={0}
+          width={200}
+          height={200}
           className="w-full h-full object-cover"
         />
       ) : (
@@ -60,9 +65,7 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
           className="h-full w-full flex items-center justify-center border border-dashed border-white/30"
           onClick={handleAreaClick}
         >
-          <p className="text-muted-foreground text-sm">
-            Drag and drop some files here, or click to select files
-          </p>
+          <p className="text-muted-foreground text-sm">Upload</p>
         </div>
       )}
     </div>

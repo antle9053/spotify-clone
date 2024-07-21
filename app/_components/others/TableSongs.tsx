@@ -8,7 +8,7 @@ import {
 } from "@/app/_components/ui/table";
 import Image from "next/image";
 import { Edit2, Eye, Trash } from "lucide-react";
-import { UploadSongDialog } from "./UploadSongDialogl";
+import { UploadSongDialog } from "./UploadSongDialog";
 
 const invoices = [
   {

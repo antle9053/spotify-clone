@@ -5,7 +5,11 @@ import {
   useUser as useSupaUser,
 } from "@supabase/auth-helpers-react";
 import { useCallback, useState } from "react";
-import { logOut, setUserDetails } from "../_redux/slices/userSlice";
+import {
+  logOut,
+  setArtistDetails,
+  setUserDetails,
+} from "../_redux/slices/userSlice";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "../_redux/hooks";
 import { RootState } from "../_redux/store";
@@ -25,11 +29,23 @@ export const useUser = () => {
   const userDetails = useAppSelector(
     (state: RootState) => state.user.userDetails,
   );
+  const artistDetails = useAppSelector(
+    (state: RootState) => state.user.artistDetails,
+  );
 
   const { toast } = useToast();
 
   const getUserDetails = () =>
     supabaseClient.from("users").select("*").single();
+
+  const getArtistDetails = async (user_id: string) => {
+    return supabaseClient
+      .from("artists")
+      .select("*")
+      .eq("user_id", user_id)
+      .select()
+      .single();
+  };
 
   const fetchUserDetails = useCallback(async () => {
     if (user && !isLoadingData && !userDetails) {
@@ -41,7 +57,22 @@ export const useUser = () => {
 
           if (userDetailResponse.status === "fulfilled") {
             dispatch(setUserDetails(userDetailResponse.value.data));
+
+            return userDetailResponse.value.data;
           }
+        })
+        .then((result) => {
+          if (result.is_artist) {
+            const fetchArtistDetails = async () => {
+              const artistDetailResponse = await getArtistDetails(result.id);
+
+              if (artistDetailResponse.status === 200) {
+                dispatch(setArtistDetails(artistDetailResponse.data));
+              }
+            };
+            fetchArtistDetails();
+          }
+          return;
         })
         .finally(() => {
           setIsLoadingData(false);
@@ -73,6 +104,7 @@ export const useUser = () => {
     userDetails,
     isLoading: isLoadingData || isLoadingUser,
     supabaseClient,
+    artistDetails,
     handleLogout,
     fetchUserDetails,
   };

@@ -14,12 +14,21 @@ export interface UserDetails {
   payment_method?: Stripe.PaymentMethod[Stripe.PaymentMethod.Type];
 }
 
+export interface ArtistDetails {
+  id: string;
+  artist_name: string;
+  cover_url?: string;
+  about: string;
+}
+
 export interface UserState {
   userDetails: UserDetails | null;
+  artistDetails: ArtistDetails | null;
 }
 
 const initialState = {
   userDetails: null,
+  artistDetails: null,
 } satisfies UserState as UserState;
 
 const userSlice = createSlice({
@@ -32,11 +41,17 @@ const userSlice = createSlice({
     ) => {
       state.userDetails = action.payload;
     },
+    setArtistDetails: (
+      state: UserState,
+      action: PayloadAction<ArtistDetails | null>,
+    ) => {
+      state.artistDetails = action.payload;
+    },
     logOut: (state: UserState) => {
       state.userDetails = null;
     },
   },
 });
 
-export const { setUserDetails, logOut } = userSlice.actions;
+export const { setUserDetails, setArtistDetails, logOut } = userSlice.actions;
 export default userSlice.reducer;

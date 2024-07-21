@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TableSongs } from "@/app/_components/others/TableSongs";
-import { UploadSongDialog } from "@/app/_components/others/UploadSongDialogl";
+import { UploadSongDialog } from "@/app/_components/others/UploadSongDialog";
 import { Button } from "@/app/_components/ui/button";
 import { Separator } from "@/app/_components/ui/separator";
 import { Plus } from "lucide-react";

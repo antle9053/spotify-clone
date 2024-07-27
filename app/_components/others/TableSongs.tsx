@@ -8,66 +8,13 @@ import {
 } from "@/app/_components/ui/table";
 import Image from "next/image";
 import { Edit2, Eye, Trash } from "lucide-react";
-import { UploadSongDialog } from "./UploadSongDialog";
-
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+import { useTableSongs } from "@/app/_hooks/useTableSongs";
+import { formatDuration } from "@/app/_helpers/formatDuration";
 
 export function TableSongs() {
+  const { songs, loading } = useTableSongs();
+
+  console.log(songs);
   return (
     <Table>
       <TableHeader>
@@ -81,19 +28,24 @@ export function TableSongs() {
       </TableHeader>
 
       <TableBody>
-        {invoices.map((invoice) => (
-          <TableRow className="border-white/10" key={invoice.invoice}>
+        {songs.map((song, index) => (
+          <TableRow className="border-white/10" key={index}>
             <TableCell className="font-medium text-white">
               <Image
-                src="/images/artworks-WSNEBp4FXJhb-0-t500x500.jpg"
+                src={
+                  `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${song.thumbnail_path}` ??
+                  "/images/music-placeholder.png"
+                }
                 alt="thumbnail"
                 width={50}
                 height={50}
               />
             </TableCell>
-            <TableCell className="text-white">HEYA</TableCell>
-            <TableCell className="text-white">IVE SWITCH</TableCell>
-            <TableCell className="text-white">3:23</TableCell>
+            <TableCell className="text-white">{song.title}</TableCell>
+            <TableCell className="text-white">{song.album_id ?? ""}</TableCell>
+            <TableCell className="text-white">
+              {formatDuration(song.duration)}
+            </TableCell>
             <TableCell className="text-right text-white">
               <div className="flex gap-4 justify-end items-center">
                 <Eye size={16} className="cursor-pointer" />

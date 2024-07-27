@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { User } from "@supabase/auth-helpers-nextjs";
 import Stripe from "stripe";
 
 export interface UserDetails {

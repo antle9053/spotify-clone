@@ -19,10 +19,11 @@ export const useArtistSong = () => {
     title: string;
     song: File;
     thumbnail?: File;
+    duration: number;
   }) => {
     try {
       if (artistDetails && artistDetails.id) {
-        const { title, song, thumbnail } = values;
+        const { title, song, thumbnail, duration } = values;
         let song_path = "";
         let errorUploadSong;
         let thumbnail_path = "";
@@ -32,6 +33,8 @@ export const useArtistSong = () => {
           const { data, error } = await supabaseClient.storage
             .from("songs")
             .upload(`pubic/${filename}`, song, { upsert: false });
+
+          console.log(data);
           song_path = data?.path ?? "";
           errorUploadSong = error;
         }
@@ -53,12 +56,12 @@ export const useArtistSong = () => {
             ...(thumbnail_path && { thumbnail_path }),
             author_id: artistDetails?.id,
             album_id: null,
+            duration,
           })
           .select();
         console.log(data);
 
         if (!error && !errorUploadSong && !errorUploadThumbnail) {
-          console.log("Success");
           toast({
             title: "Success",
             description: "Upload song successfully",

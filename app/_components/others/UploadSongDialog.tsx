@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useState } from "react";
 import { z } from "zod";
 import { Separator } from "@/app/_components/ui/separator";
 import {
@@ -12,18 +12,19 @@ import {
   FormMessage,
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
-import { Textarea } from "@/app/_components/ui/textarea";
 import { InputSingleFile } from "@/app/_components/others/InputSingleFile";
 import { Button } from "@/app/_components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useArtistSong } from "@/app/_hooks/useArtistSong";
+import { InputAudioFile } from "@/app/_components/others/InputAudioFile";
 
 const THUMBNAIL_MAX_UPLOAD_SIZE = 1024 * 1024 * 2; // 2MB;
 const SONG_MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 5MB;
 
 const formSchema = z.object({
   title: z.string().min(2, "Song title must be at least 2 characters").max(50),
+  duration: z.number(),
   thumbnail: z
     .instanceof(File)
     .optional()
@@ -50,6 +51,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      duration: 0,
       thumbnail: undefined,
       song: undefined,
     },
@@ -130,10 +132,12 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                   <FormItem>
                     <FormLabel className="text-white">Upload song</FormLabel>
                     <FormControl>
-                      <InputSingleFile
-                        accept="audio/*"
+                      <InputAudioFile
                         setValue={(value) => form.setValue("song", value)}
-                        className="w-[300px] h-[300px]"
+                        setOuterDuration={(value) =>
+                          form.setValue("duration", value)
+                        }
+                        className="text-white"
                       />
                     </FormControl>
                     <FormDescription>This is the song</FormDescription>

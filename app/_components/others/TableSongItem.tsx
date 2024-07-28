@@ -1,0 +1,48 @@
+import Image from "next/image";
+import { TableCell, TableRow } from "../ui/table";
+import { Song } from "@/app/_types/song";
+import { FC, useState } from "react";
+import { formatDuration } from "@/app/_helpers/formatDuration";
+import { Edit2, Eye, Trash } from "lucide-react";
+import { ConfirmDeleteSongDialog } from "./Dialogs/ConfirmDeleteSong";
+
+interface TableSongItemProps {
+  song: Song;
+}
+
+export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
+  const [openDelete, setOpenDelete] = useState(false);
+
+  return (
+    <TableRow className="border-white/10">
+      <TableCell className="font-medium text-white">
+        <Image
+          src={
+            song.thumbnail_path
+              ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${song.thumbnail_path}`
+              : "/images/music-placeholder.png"
+          }
+          alt="thumbnail"
+          width={50}
+          height={50}
+        />
+      </TableCell>
+      <TableCell className="text-white">{song.title}</TableCell>
+      <TableCell className="text-white">{song.album_id ?? ""}</TableCell>
+      <TableCell className="text-white">
+        {formatDuration(song.duration)}
+      </TableCell>
+      <TableCell className="text-right text-white">
+        <div className="flex gap-4 justify-end items-center">
+          <Eye size={16} className="cursor-pointer" />
+          <Edit2 size={16} className="cursor-pointer" />
+          <ConfirmDeleteSongDialog
+            open={openDelete}
+            handleOpenChange={(open) => setOpenDelete(open)}
+            song={song}
+          />
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+};

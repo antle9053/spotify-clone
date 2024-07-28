@@ -61,6 +61,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await uploadSong(values);
+    handleOpenChange(false);
   };
 
   return (

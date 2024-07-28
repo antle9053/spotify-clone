@@ -59,7 +59,6 @@ export const useArtistSong = () => {
             duration,
           })
           .select();
-        console.log(data);
 
         if (!error && !errorUploadSong && !errorUploadThumbnail) {
           toast({

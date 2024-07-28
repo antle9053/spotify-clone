@@ -6,6 +6,7 @@ import StoreProvider from "./StoreProvider";
 import { Sidebar } from "./_components/layout/Sidebar";
 import { SupabaseProvider } from "@/app/_providers/SupabaseProvider";
 import { Toaster } from "./_components/ui/toaster";
+import { Suspense } from "react";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -33,7 +34,9 @@ export default function RootLayout({
       >
         <SupabaseProvider>
           <StoreProvider>
-            <Sidebar>{children}</Sidebar>
+            <Suspense fallback={<p>Loading ...</p>}>
+              <Sidebar>{children}</Sidebar>
+            </Suspense>
             <Toaster />
           </StoreProvider>
         </SupabaseProvider>

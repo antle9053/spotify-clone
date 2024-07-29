@@ -1,6 +1,7 @@
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/app/_hooks/useUser";
 import { useToast } from "@/app/_components/ui/use-toast";
+import { songDialogType } from "@/app/_components/others/UploadSongDialog";
 
 export const useArtistSong = () => {
   const { supabaseClient } = useSessionContext();
@@ -15,12 +16,16 @@ export const useArtistSong = () => {
     }
   };
 
-  const uploadSong = async (values: {
-    title: string;
-    song: File;
-    thumbnail?: File;
-    duration: number;
-  }) => {
+  const uploadSong = async (
+    values: {
+      title?: string;
+      song?: File;
+      thumbnail?: File;
+      duration: number;
+    },
+    type: songDialogType,
+    songId: string,
+  ) => {
     try {
       if (artistDetails && artistDetails.id) {
         const { title, song, thumbnail, duration } = values;
@@ -28,13 +33,13 @@ export const useArtistSong = () => {
         let errorUploadSong;
         let thumbnail_path = "";
         let errorUploadThumbnail;
+        let errorSubmit;
         if (song) {
           const filename = `${song.lastModified}-${song.name}`;
           const { data, error } = await supabaseClient.storage
             .from("songs")
             .upload(`pubic/${filename}`, song, { upsert: false });
 
-          console.log(data);
           song_path = data?.path ?? "";
           errorUploadSong = error;
         }
@@ -48,19 +53,38 @@ export const useArtistSong = () => {
           thumbnail_path = data?.path ?? "";
           errorUploadThumbnail = error;
         }
-        const { data, error } = await supabaseClient
-          .from("songs")
-          .insert({
-            title,
-            ...(song_path && { song_path }),
-            ...(thumbnail_path && { thumbnail_path }),
-            author_id: artistDetails?.id,
-            album_id: null,
-            duration,
-          })
-          .select();
 
-        if (!error && !errorUploadSong && !errorUploadThumbnail) {
+        if (type === "upload") {
+          const { error } = await supabaseClient
+            .from("songs")
+            .insert({
+              title: title ?? "",
+              ...(song_path && { song_path }),
+              ...(thumbnail_path && { thumbnail_path }),
+              author_id: artistDetails?.id,
+              album_id: null,
+              ...(duration && { duration }),
+            })
+            .select();
+          errorSubmit = error;
+        } else if (type === "update") {
+          console.log(songId);
+          const { error } = await supabaseClient
+            .from("songs")
+            .update({
+              title,
+              ...(song_path && { song_path }),
+              ...(thumbnail_path && { thumbnail_path }),
+              author_id: artistDetails?.id,
+              album_id: null,
+              duration,
+            })
+            .eq("id", songId);
+
+          errorSubmit = error;
+        }
+
+        if (!errorSubmit && !errorUploadSong && !errorUploadThumbnail) {
           toast({
             title: "Success",
             description: "Upload song successfully",

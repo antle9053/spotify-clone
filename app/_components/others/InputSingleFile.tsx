@@ -3,7 +3,8 @@ import { ChangeEvent, FC, useRef, useState } from "react";
 import { cn } from "@/app/_lib/utils";
 import Image from "next/image";
 import { Button } from "@/app/_components/ui/button";
-import { Eye, Trash } from "lucide-react";
+import { Eye, Images, Trash } from "lucide-react";
+import { createImageLink } from "@/app/_helpers/createImageLink";
 
 interface InputSingleFileProps {
   className?: string;
@@ -18,7 +19,8 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
   setValue,
   defaultValue,
 }) => {
-  const [preview, setPreview] = useState<string>(defaultValue ?? "");
+  console.log(defaultValue);
+  const [preview, setPreview] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleAreaClick = () => {
@@ -54,32 +56,52 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
           }
         }}
       ></Input>
-      {preview ? (
+      {preview || defaultValue ? (
         <div className="group w-full h-full relative">
           <div className="w-full h-full bg-black/40 absolute top-0 left-0 hidden group-hover:flex justify-center items-center gap-2">
-            <Button
-              size="icon"
-              variant="secondary"
-              className="rounded-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Eye />
-            </Button>
-            <Button
-              size="icon"
-              variant="secondary"
-              className="rounded-full"
-              onClick={(e) => {
-                e.stopPropagation();
-                setValue(undefined);
-                setPreview("");
-              }}
-            >
-              <Trash />
-            </Button>
+            {preview ? (
+              <>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="rounded-full"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Eye />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="rounded-full"
+                  onClick={(e) => {
+                    setValue(undefined);
+                    setPreview("");
+                  }}
+                  type="button"
+                >
+                  <Trash />
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="icon"
+                variant="secondary"
+                className="rounded-full"
+                onClick={handleAreaClick}
+                type="button"
+              >
+                <Images />
+              </Button>
+            )}
           </div>
           <Image
-            src={preview}
+            src={
+              preview
+                ? preview
+                : defaultValue
+                  ? createImageLink(defaultValue)
+                  : ""
+            }
             alt="Cover image preview"
             width={200}
             height={200}

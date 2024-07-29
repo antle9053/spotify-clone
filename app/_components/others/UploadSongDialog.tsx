@@ -18,39 +18,61 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useArtistSong } from "@/app/_hooks/useArtistSong";
 import { InputAudioFile } from "@/app/_components/others/InputAudioFile";
+import { Song } from "@/app/_types/song";
+
+export type songDialogType = "upload" | "update";
 
 const THUMBNAIL_MAX_UPLOAD_SIZE = 1024 * 1024 * 2; // 2MB;
 const SONG_MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 5MB;
-
-const formSchema = z.object({
-  title: z.string().min(2, "Song title must be at least 2 characters").max(50),
-  duration: z.number(),
-  thumbnail: z
-    .instanceof(File)
-    .optional()
-    .refine((file) => {
-      return !file || file.size <= THUMBNAIL_MAX_UPLOAD_SIZE;
-    }, "File size must be less than 3MB"),
-  song: z.instanceof(File).refine((file) => {
-    return !file || file.size <= SONG_MAX_UPLOAD_SIZE;
-  }, "File size must be less than 3MB"),
-});
 
 interface UploadSongDialogProps {
   triggerElement?: ReactNode;
   open: boolean;
   handleOpenChange: (open: boolean) => void;
+  type: songDialogType;
+  song?: Song;
 }
 
 export const UploadSongDialog: FC<UploadSongDialogProps> = ({
   triggerElement,
   open,
   handleOpenChange,
+  type,
+  song,
 }) => {
+  const formSchema = z.object({
+    title:
+      type === "upload"
+        ? z.string().min(2, "Song title must be at least 2 characters").max(50)
+        : z
+            .string()
+            .min(2, "Song title must be at least 2 characters")
+            .max(50)
+            .optional(),
+    duration: z.number(),
+    thumbnail: z
+      .instanceof(File)
+      .optional()
+      .refine((file) => {
+        return !file || file.size <= THUMBNAIL_MAX_UPLOAD_SIZE;
+      }, "File size must be less than 3MB"),
+    song:
+      type === "upload"
+        ? z.instanceof(File).refine((file) => {
+            return !file || file.size <= SONG_MAX_UPLOAD_SIZE;
+          }, "File size must be less than 3MB")
+        : z
+            .instanceof(File)
+            .optional()
+            .refine((file) => {
+              return !file || file.size <= SONG_MAX_UPLOAD_SIZE;
+            }, "File size must be less than 3MB"),
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      title: type === "update" ? song?.title : "",
       duration: 0,
       thumbnail: undefined,
       song: undefined,
@@ -60,7 +82,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
   const { uploadSong } = useArtistSong();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await uploadSong(values);
+    await uploadSong(values, type, song?.id ?? "");
     handleOpenChange(false);
   };
 
@@ -117,6 +139,9 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                         accept="image/*"
                         setValue={(value) => form.setValue("thumbnail", value)}
                         className="w-[300px] h-[300px]"
+                        defaultValue={
+                          type === "update" ? song?.thumbnail_path : ""
+                        }
                       />
                     </FormControl>
                     <FormDescription>

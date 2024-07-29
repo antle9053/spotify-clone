@@ -25,13 +25,16 @@ export const useTableSongs = () => {
 
   useEffect(() => {
     const fetchTotalPage = async () => {
-      const { count } = await supabaseClient
-        .from("songs")
-        .select("*", { count: "exact", head: true });
+      if (artistDetails && artistDetails.id) {
+        const { count } = await supabaseClient
+          .from("songs")
+          .select("*", { count: "exact", head: true })
+          .eq("author_id", artistDetails.id);
 
-      const totalPage = Math.ceil((count ?? 1) / PAGE_SIZE);
-      console.log(totalPage);
-      setTotalPage(totalPage);
+        const totalPage = Math.ceil((count ?? 1) / PAGE_SIZE);
+        console.log(totalPage);
+        setTotalPage(totalPage);
+      }
     };
     fetchTotalPage();
   }, []);

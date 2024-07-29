@@ -21,6 +21,7 @@ export default function ArtistSongsPage() {
             </Button>
           }
           open={open}
+          type="upload"
           handleOpenChange={(open) => setOpen(open)}
         />
       </div>

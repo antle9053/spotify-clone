@@ -5,6 +5,7 @@ import { FC, useState } from "react";
 import { formatDuration } from "@/app/_helpers/formatDuration";
 import { Edit2, Eye, Trash } from "lucide-react";
 import { ConfirmDeleteSongDialog } from "./Dialogs/ConfirmDeleteSong";
+import { UploadSongDialog } from "@/app/_components/others/UploadSongDialog";
 
 interface TableSongItemProps {
   song: Song;
@@ -12,6 +13,7 @@ interface TableSongItemProps {
 
 export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
   const [openDelete, setOpenDelete] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
 
   return (
     <TableRow className="border-white/10">
@@ -34,8 +36,13 @@ export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
       </TableCell>
       <TableCell className="text-right text-white">
         <div className="flex gap-4 justify-end items-center">
-          <Eye size={16} className="cursor-pointer" />
-          <Edit2 size={16} className="cursor-pointer" />
+          <UploadSongDialog
+            open={openEdit}
+            handleOpenChange={(open) => setOpenEdit(open)}
+            type="update"
+            triggerElement={<Edit2 size={16} className="cursor-pointer" />}
+            song={song}
+          />
           <ConfirmDeleteSongDialog
             open={openDelete}
             handleOpenChange={(open) => setOpenDelete(open)}

@@ -1,8 +1,11 @@
 import { Input } from "@/app/_components/ui/input";
-import { ChangeEvent, FC, useRef, useState } from "react";
+import { ChangeEvent, FC, useCallback, useRef, useState } from "react";
 import { cn } from "@/app/_lib/utils";
-import Image from "next/image";
+import WaveSurfer from "wavesurfer.js";
 import { formatDuration } from "@/app/_helpers/formatDuration";
+import { useWavesurfer } from "@wavesurfer/react";
+import { Button } from "@/app/_components/ui/button";
+import { Pause, Play, X } from "lucide-react";
 
 interface InputAudioFileProps {
   className?: string;
@@ -18,7 +21,38 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
   setOuterDuration,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [preview, setPreview] = useState<string>("");
   const [duration, setDuration] = useState<number | null>(null);
+  const [name, setName] = useState<string>("");
+
+  const handleAreaClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+  const { wavesurfer, isPlaying, currentTime } = useWavesurfer({
+    container: previewRef,
+    height: 30,
+    waveColor: "#D0D0D0",
+    progressColor: "#383838",
+    url: preview,
+    barWidth: 4,
+    barRadius: 2,
+    barGap: 2,
+    cursorWidth: 0,
+  });
+
+  const onPlayPause = useCallback(() => {
+    wavesurfer && wavesurfer.playPause();
+  }, [wavesurfer]);
+
+  const handleRemovePreview = () => {
+    setPreview("");
+    setValue(undefined);
+    setName("");
+    setDuration(null);
+  };
 
   return (
     <div
@@ -32,22 +66,66 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
         accept="audio/*"
         multiple={false}
         type="file"
+        className="hidden"
         defaultValue={defaultValue}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           const file = event.target.files?.[0];
           if (file) {
             const audio = new Audio(URL.createObjectURL(file));
             audio.addEventListener("loadedmetadata", () => {
-              console.log(audio.duration);
               setDuration(Math.ceil(audio.duration));
               setOuterDuration?.(Math.ceil(audio.duration));
               setValue(file);
+              setName(file.name);
+              setPreview(audio.src);
             });
           }
         }}
       ></Input>
+      {preview ? (
+        <div className="w-full h-full relative">
+          <div className="w-full h-full flex justify-between items-center bg-white rounded-md p-2 relative">
+            <Button
+              onClick={onPlayPause}
+              variant="secondary"
+              size="icon"
+              type="button"
+            >
+              {isPlaying ? (
+                <Pause color="black" size={16} fill="black" />
+              ) : (
+                <Play color="black" size={16} fill="black" />
+              )}
+            </Button>
+            <div className="flex-grow" ref={previewRef}></div>
+            <Button
+              className="absolute -top-[10px] -right-[10px] w-[20px] h-[20px] rounded-full"
+              size="icon"
+              type="button"
+              onClick={handleRemovePreview}
+            >
+              <X size={12} />
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="h-[60px] w-full flex items-center justify-center border border-dashed border-white/30 cursor-pointer"
+          onClick={handleAreaClick}
+        >
+          <p className="text-muted-foreground text-sm">Upload</p>
+        </div>
+      )}
+      {name ? (
+        <p className="mt-2 text-sm">
+          <span className="font-bold">Name:</span> {name}
+        </p>
+      ) : null}
       {duration ? (
-        <p className="mt-2">Duration: {formatDuration(duration)}</p>
+        <p className="mt-2 text-sm">
+          <span className="font-bold">Duration:</span>{" "}
+          {formatDuration(duration)}
+        </p>
       ) : null}
     </div>
   );

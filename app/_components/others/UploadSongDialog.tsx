@@ -101,7 +101,10 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
       >
         {triggerElement}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[700px] max-h-full bg-neutral-900 border-0 overflow-y-auto">
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="sm:max-w-[700px] max-h-full bg-neutral-900 border-0 overflow-y-auto"
+      >
         <h1 className="text-white text-2xl font-semibold">Upload song</h1>
         <Separator className="my-3 bg-white/10" />
         <Form {...form}>
@@ -125,52 +128,58 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                 </FormItem>
               )}
             />
-            <div className="flex flex-col md:flex-row justify-between">
-              <FormField
-                control={form.control}
-                name="thumbnail"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white">
-                      Upload thumbnail
-                    </FormLabel>
-                    <FormControl>
-                      <InputSingleFile
-                        accept="image/*"
-                        setValue={(value) => form.setValue("thumbnail", value)}
-                        className="w-[300px] h-[300px]"
-                        defaultValue={
-                          type === "update" ? song?.thumbnail_path : ""
-                        }
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      This is the thumbnail of song
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="song"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-white">Upload song</FormLabel>
-                    <FormControl>
-                      <InputAudioFile
-                        setValue={(value) => form.setValue("song", value)}
-                        setOuterDuration={(value) =>
-                          form.setValue("duration", value)
-                        }
-                        className="text-white"
-                      />
-                    </FormControl>
-                    <FormDescription>This is the song</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="flex flex-col md:flex-row justify-between gap-2">
+              <div className="flex-grow basis-[300px]">
+                <FormField
+                  control={form.control}
+                  name="thumbnail"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">
+                        Upload thumbnail
+                      </FormLabel>
+                      <FormControl>
+                        <InputSingleFile
+                          accept="image/*"
+                          setValue={(value) =>
+                            form.setValue("thumbnail", value)
+                          }
+                          className="w-[300px] h-[300px]"
+                          defaultValue={
+                            type === "update" ? song?.thumbnail_path : ""
+                          }
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        This is the thumbnail of song
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex-grow basis-[300px]">
+                <FormField
+                  control={form.control}
+                  name="song"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">Upload song</FormLabel>
+                      <FormControl>
+                        <InputAudioFile
+                          setValue={(value) => form.setValue("song", value)}
+                          setOuterDuration={(value) =>
+                            form.setValue("duration", value)
+                          }
+                          className="text-white w-full"
+                        />
+                      </FormControl>
+                      <FormDescription>This is the song</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <Button className="float-end" variant="secondary" type="submit">
               Upload

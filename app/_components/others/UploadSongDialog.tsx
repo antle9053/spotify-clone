@@ -172,6 +172,13 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                             form.setValue("duration", value)
                           }
                           className="text-white w-full"
+                          defaultValue={
+                            type === "update" ? song?.song_path : ""
+                          }
+                          defaultDuration={
+                            type === "update" ? song?.duration : 0
+                          }
+                          defaultName={type === "update" ? song?.song_name : ""}
                         />
                       </FormControl>
                       <FormDescription>This is the song</FormDescription>

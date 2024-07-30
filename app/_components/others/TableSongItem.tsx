@@ -17,7 +17,7 @@ export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
 
   return (
     <TableRow className="border-white/10">
-      <TableCell className="font-medium text-white">
+      <TableCell className="font-medium text-white" width="64px">
         <Image
           src={
             song.thumbnail_path

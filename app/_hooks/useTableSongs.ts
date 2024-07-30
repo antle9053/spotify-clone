@@ -25,19 +25,22 @@ export const useTableSongs = () => {
 
   useEffect(() => {
     const fetchTotalPage = async () => {
+      console.log("a");
       if (artistDetails && artistDetails.id) {
         const { count } = await supabaseClient
           .from("songs")
           .select("*", { count: "exact", head: true })
           .eq("author_id", artistDetails.id);
 
+        console.log(count);
+
         const totalPage = Math.ceil((count ?? 1) / PAGE_SIZE);
         console.log(totalPage);
         setTotalPage(totalPage);
       }
     };
-    fetchTotalPage();
-  }, []);
+    void fetchTotalPage();
+  }, [artistDetails]);
 
   useEffect(() => {
     const fetchSongs = async () => {

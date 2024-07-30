@@ -59,7 +59,7 @@ export const useArtistSong = () => {
             .from("songs")
             .insert({
               title: title ?? "",
-              ...(song_path && { song_path }),
+              ...(song_path && { song_path, song_name: song!.name }),
               ...(thumbnail_path && { thumbnail_path }),
               author_id: artistDetails?.id,
               album_id: null,
@@ -73,11 +73,10 @@ export const useArtistSong = () => {
             .from("songs")
             .update({
               title,
-              ...(song_path && { song_path }),
+              ...(song_path && { song_path, duration, song_name: song!.name }),
               ...(thumbnail_path && { thumbnail_path }),
               author_id: artistDetails?.id,
               album_id: null,
-              duration,
             })
             .eq("id", songId);
 

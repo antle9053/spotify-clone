@@ -8,4 +8,5 @@ export interface Song {
   song_path: string;
   thumbnail_path?: string;
   title: string;
+  song_name: string;
 }

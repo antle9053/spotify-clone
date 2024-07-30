@@ -4,7 +4,7 @@ import { cn } from "@/app/_lib/utils";
 import Image from "next/image";
 import { Button } from "@/app/_components/ui/button";
 import { Eye, Images, Trash } from "lucide-react";
-import { createImageLink } from "@/app/_helpers/createImageLink";
+import { createImageLink } from "@/app/_helpers/createLinks";
 
 interface InputSingleFileProps {
   className?: string;
@@ -19,7 +19,6 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
   setValue,
   defaultValue,
 }) => {
-  console.log(defaultValue);
   const [preview, setPreview] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 

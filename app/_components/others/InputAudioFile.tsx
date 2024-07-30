@@ -6,11 +6,14 @@ import { formatDuration } from "@/app/_helpers/formatDuration";
 import { useWavesurfer } from "@wavesurfer/react";
 import { Button } from "@/app/_components/ui/button";
 import { Pause, Play, X } from "lucide-react";
+import { createAudioLink } from "@/app/_helpers/createLinks";
 
 interface InputAudioFileProps {
   className?: string;
   setValue: (value: any) => void;
   defaultValue?: string;
+  defaultName?: string;
+  defaultDuration?: number;
   setOuterDuration?: (value: number) => void;
 }
 
@@ -19,12 +22,16 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
   setValue,
   defaultValue,
   setOuterDuration,
+  defaultDuration,
+  defaultName,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const [preview, setPreview] = useState<string>("");
-  const [duration, setDuration] = useState<number | null>(null);
-  const [name, setName] = useState<string>("");
+  const [duration, setDuration] = useState<number | null>(
+    defaultDuration ?? null,
+  );
+  const [name, setName] = useState<string>(defaultName ?? "");
 
   const handleAreaClick = () => {
     if (inputRef.current) {
@@ -36,12 +43,14 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
     height: 30,
     waveColor: "#D0D0D0",
     progressColor: "#383838",
-    url: preview,
+    url: preview || createAudioLink(defaultValue!),
     barWidth: 4,
     barRadius: 2,
     barGap: 2,
     cursorWidth: 0,
   });
+
+  console.log(createAudioLink(defaultValue!));
 
   const onPlayPause = useCallback(() => {
     wavesurfer && wavesurfer.playPause();
@@ -50,8 +59,8 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
   const handleRemovePreview = () => {
     setPreview("");
     setValue(undefined);
-    setName("");
-    setDuration(null);
+    setName(defaultName || "");
+    setDuration(defaultDuration || null);
   };
 
   return (
@@ -67,7 +76,6 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
         multiple={false}
         type="file"
         className="hidden"
-        defaultValue={defaultValue}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           const file = event.target.files?.[0];
           if (file) {
@@ -82,9 +90,19 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
           }
         }}
       ></Input>
-      {preview ? (
+      {preview || defaultValue ? (
         <div className="w-full h-full relative">
           <div className="w-full h-full flex justify-between items-center bg-white rounded-md p-2 relative">
+            {preview ? (
+              <Button
+                className="absolute -top-[10px] -right-[10px] w-[20px] h-[20px] rounded-full"
+                size="icon"
+                type="button"
+                onClick={handleRemovePreview}
+              >
+                <X size={12} />
+              </Button>
+            ) : null}
             <Button
               onClick={onPlayPause}
               variant="secondary"
@@ -98,15 +116,17 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
               )}
             </Button>
             <div className="flex-grow" ref={previewRef}></div>
-            <Button
-              className="absolute -top-[10px] -right-[10px] w-[20px] h-[20px] rounded-full"
-              size="icon"
-              type="button"
-              onClick={handleRemovePreview}
-            >
-              <X size={12} />
-            </Button>
           </div>
+          {!preview && defaultValue ? (
+            <Button
+              className="mt-2"
+              variant="secondary"
+              type="button"
+              onClick={handleAreaClick}
+            >
+              Upload new song
+            </Button>
+          ) : null}
         </div>
       ) : (
         <div

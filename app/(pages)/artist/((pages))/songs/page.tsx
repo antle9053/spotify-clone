@@ -12,7 +12,7 @@ export default function ArtistSongsPage() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-white text-2xl font-semibold">Song</h1>
+        <h1 className="text-white text-2xl font-semibold">Songs</h1>
         <UploadSongDialog
           triggerElement={
             <Button variant="secondary">

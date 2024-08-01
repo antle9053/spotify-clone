@@ -6,9 +6,9 @@ import useUpdateQueryParams from "./useUpdateQueryParams";
 
 const PAGE_SIZE = 5;
 
-export const useTableSongs = () => {
+export const useTableAlbums = () => {
   const [page, setPage] = useState(1);
-  const [songs, setSongs] = useState<Song[]>([]);
+  const [albums, setAlbums] = useState<Song[]>([]);
   const [totalPage, setTotalPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const { supabaseClient } = useSessionContext();
@@ -25,12 +25,11 @@ export const useTableSongs = () => {
 
   useEffect(() => {
     const fetchTotalPage = async () => {
-      console.log("a");
       if (artistDetails && artistDetails.id) {
         const { count } = await supabaseClient
-          .from("songs")
+          .from("albums")
           .select("*", { count: "exact", head: true })
-          .eq("author_id", artistDetails.id);
+          .eq("artist_id", artistDetails.id);
 
         const totalPage = Math.ceil((count ?? 1) / PAGE_SIZE);
 
@@ -41,7 +40,7 @@ export const useTableSongs = () => {
   }, [artistDetails]);
 
   useEffect(() => {
-    const fetchSongs = async () => {
+    const fetchAlbums = async () => {
       try {
         setLoading(true);
         if (artistDetails && artistDetails.id) {
@@ -49,15 +48,15 @@ export const useTableSongs = () => {
           const to = page * PAGE_SIZE - 1;
 
           const { data, error } = await supabaseClient
-            .from("songs")
+            .from("albums")
             .select()
-            .eq("author_id", artistDetails.id)
+            .eq("artist_id", artistDetails.id)
             .range(from, to);
 
           if (error) {
             console.error(error);
           } else {
-            setSongs(data);
+            setAlbums(data);
           }
         }
       } catch (error) {
@@ -66,7 +65,7 @@ export const useTableSongs = () => {
         setLoading(false);
       }
     };
-    fetchSongs();
+    void fetchAlbums();
   }, [artistDetails, page]);
 
   const handleNextPage = () => {
@@ -80,7 +79,7 @@ export const useTableSongs = () => {
   };
 
   return {
-    songs,
+    albums,
     loading,
     handleGotoPage,
     handleNextPage,

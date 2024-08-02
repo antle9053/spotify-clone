@@ -50,14 +50,14 @@ export const useTableSongs = () => {
 
           const { data, error } = await supabaseClient
             .from("songs")
-            .select()
+            .select("*, albums(album_name)")
             .eq("author_id", artistDetails.id)
             .range(from, to);
 
           if (error) {
             console.error(error);
           } else {
-            setSongs(data);
+            setSongs(data.map((item) => ({ ...item, album: item.albums })));
           }
         }
       } catch (error) {

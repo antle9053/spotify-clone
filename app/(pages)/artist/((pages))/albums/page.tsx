@@ -5,6 +5,7 @@ import { Button } from "@/app/_components/ui/button";
 import { Separator } from "@/app/_components/ui/separator";
 import { Plus } from "lucide-react";
 import { CreateAlbumDialog } from "@/app/_components/others/Dialogs/CreateAlbumDialog";
+import { TableAlbums } from "@/app/_components/others/TableAlbums";
 
 export default function ArtistAlbumsPage() {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,7 @@ export default function ArtistAlbumsPage() {
         />
       </div>
       <Separator className="my-4 bg-white/10" />
+      <TableAlbums />
     </div>
   );
 }

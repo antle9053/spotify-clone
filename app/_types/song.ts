@@ -1,6 +1,9 @@
+import { Album } from "@/app/_types/album";
+
 export interface Song {
   id: string;
   album_id?: string;
+  album?: Partial<Album>;
   author?: string;
   author_id: string;
   created_at: Date;

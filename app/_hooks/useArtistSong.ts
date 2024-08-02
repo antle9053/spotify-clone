@@ -8,27 +8,20 @@ export const useArtistSong = () => {
   const { artistDetails } = useUser();
   const { toast } = useToast();
 
-  const getProfile = async () => {
-    try {
-      const { data } = await supabaseClient.from("artist").select();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const uploadSong = async (
     values: {
       title?: string;
       song?: File;
       thumbnail?: File;
       duration: number;
+      album?: string;
     },
     type: songDialogType,
     songId: string,
   ) => {
     try {
       if (artistDetails && artistDetails.id) {
-        const { title, song, thumbnail, duration } = values;
+        const { title, song, thumbnail, duration, album } = values;
         let song_path = "";
         let errorUploadSong;
         let thumbnail_path = "";
@@ -62,7 +55,7 @@ export const useArtistSong = () => {
               ...(song_path && { song_path, song_name: song!.name }),
               ...(thumbnail_path && { thumbnail_path }),
               author_id: artistDetails?.id,
-              album_id: null,
+              album_id: album && album !== "none" ? album : null,
               ...(duration && { duration }),
             })
             .select();
@@ -76,7 +69,7 @@ export const useArtistSong = () => {
               ...(song_path && { song_path, duration, song_name: song!.name }),
               ...(thumbnail_path && { thumbnail_path }),
               author_id: artistDetails?.id,
-              album_id: null,
+              album_id: album && album !== "none" ? album : null,
             })
             .eq("id", songId);
 

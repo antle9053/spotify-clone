@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "../ui/table";
 import { Song } from "@/app/_types/song";
 import { FC, useState } from "react";
 import { formatDuration } from "@/app/_helpers/formatDuration";
-import { Edit2, Eye, Trash } from "lucide-react";
+import { Edit2 } from "lucide-react";
 import { ConfirmDeleteSongDialog } from "./Dialogs/ConfirmDeleteSong";
 import { UploadSongDialog } from "@/app/_components/others/UploadSongDialog";
 
@@ -30,7 +30,9 @@ export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
         />
       </TableCell>
       <TableCell className="text-white">{song.title}</TableCell>
-      <TableCell className="text-white">{song.album_id ?? ""}</TableCell>
+      <TableCell className="text-white">
+        {song.album?.album_name ?? ""}
+      </TableCell>
       <TableCell className="text-white">
         {formatDuration(song.duration)}
       </TableCell>

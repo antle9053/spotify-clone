@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import { z } from "zod";
 import { Separator } from "@/app/_components/ui/separator";
 import {
@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useArtistSong } from "@/app/_hooks/useArtistSong";
 import { InputAudioFile } from "@/app/_components/others/InputAudioFile";
 import { Song } from "@/app/_types/song";
+import { SelectAlbum } from "@/app/_components/others/SelectAlbum";
 
 export type songDialogType = "upload" | "update";
 
@@ -50,6 +51,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
             .max(50)
             .optional(),
     duration: z.number(),
+    album: z.string().optional(),
     thumbnail: z
       .instanceof(File)
       .optional()
@@ -71,15 +73,23 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+
     defaultValues: {
       title: type === "update" ? song?.title : "",
       duration: 0,
       thumbnail: undefined,
       song: undefined,
+      album: undefined,
     },
   });
 
   const { uploadSong } = useArtistSong();
+
+  useEffect(() => {
+    return () => {
+      form.reset();
+    };
+  }, []);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await uploadSong(values, type, song?.id ?? "");
@@ -109,25 +119,52 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
         <Separator className="my-3 bg-white/10" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-white">Song title</FormLabel>
-                  <FormControl>
-                    <Input
-                      autoComplete="off"
-                      className="text-white border-white/20"
-                      placeholder="Please enter song title"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>This is song&apos;s title</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex flex-col md:flex-row justify-between gap-2">
+              <div className="flex-grow basis-[300px]">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel className="text-white">Song title</FormLabel>
+                      <FormControl>
+                        <Input
+                          autoComplete="off"
+                          className="text-white border-white/20 w-[300px]"
+                          placeholder="Please enter song title"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className="inline-block">
+                        This is song&apos;s title
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex-grow basis-[300px]">
+                <FormField
+                  control={form.control}
+                  name="album"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">Album</FormLabel>
+                      <FormControl>
+                        <SelectAlbum
+                          setValue={(value) => form.setValue("album", value)}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription className="inline-block">
+                        This is album (optional)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
             <div className="flex flex-col md:flex-row justify-between gap-2">
               <div className="flex-grow basis-[300px]">
                 <FormField
@@ -150,7 +187,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                           }
                         />
                       </FormControl>
-                      <FormDescription>
+                      <FormDescription className="inline-block">
                         This is the thumbnail of song
                       </FormDescription>
                       <FormMessage />
@@ -171,7 +208,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                           setOuterDuration={(value) =>
                             form.setValue("duration", value)
                           }
-                          className="text-white w-full"
+                          className="text-white w-[300px]"
                           defaultValue={
                             type === "update" ? song?.song_path : ""
                           }
@@ -181,7 +218,9 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                           defaultName={type === "update" ? song?.song_name : ""}
                         />
                       </FormControl>
-                      <FormDescription>This is the song</FormDescription>
+                      <FormDescription className="inline-block">
+                        This is the song
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

@@ -3,12 +3,13 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/app/_hooks/useUser";
 import { Song } from "@/app/_types/song";
 import useUpdateQueryParams from "./useUpdateQueryParams";
+import { Album } from "@/app/_types/album";
 
 const PAGE_SIZE = 5;
 
 export const useTableAlbums = () => {
   const [page, setPage] = useState(1);
-  const [albums, setAlbums] = useState<Song[]>([]);
+  const [albums, setAlbums] = useState<Album[]>([]);
   const [totalPage, setTotalPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const { supabaseClient } = useSessionContext();
@@ -49,7 +50,7 @@ export const useTableAlbums = () => {
 
           const { data, error } = await supabaseClient
             .from("albums")
-            .select()
+            .select("*, songs(*)")
             .eq("artist_id", artistDetails.id)
             .range(from, to);
 

@@ -8,8 +8,13 @@ import {
 import { useTableSongs } from "@/app/_hooks/useTableSongs";
 import { TableSongItem } from "./TableSongItem";
 import { TablePagination } from "./TablePagination";
+import { FC } from "react";
 
-export function TableSongs() {
+interface TableSongProps {
+  albumId?: string;
+}
+
+export const TableSongs: FC<TableSongProps> = ({ albumId }) => {
   const {
     songs,
     loading,
@@ -18,7 +23,7 @@ export function TableSongs() {
     handleGotoPage,
     handleNextPage,
     handlePreviousPage,
-  } = useTableSongs();
+  } = useTableSongs({ albumId });
 
   return (
     <>
@@ -48,4 +53,4 @@ export function TableSongs() {
       />
     </>
   );
-}
+};

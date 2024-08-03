@@ -16,7 +16,7 @@ export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
   const [openEdit, setOpenEdit] = useState(false);
 
   return (
-    <TableRow className="border-white/10">
+    <TableRow className="border-white/10 cursor-pointer">
       <TableCell className="font-medium text-white" width="64px">
         <Image
           src={

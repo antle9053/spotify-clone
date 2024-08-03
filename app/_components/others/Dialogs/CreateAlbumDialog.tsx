@@ -87,10 +87,10 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
       </DialogTrigger>
       <DialogContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="sm:max-w-[350px] max-h-full bg-neutral-900 border-0 overflow-y-auto"
+        className="sm:max-w-[350px] max-h-full border-0 overflow-y-auto"
       >
-        <h1 className="text-white text-2xl font-semibold">Create album</h1>
-        <Separator className="my-3 bg-white/10" />
+        <h1 className="text-2xl font-semibold">Create album</h1>
+        <Separator className="bg-black/10" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -98,11 +98,10 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white">Album name</FormLabel>
+                  <FormLabel>Album name</FormLabel>
                   <FormControl>
                     <Input
                       autoComplete="off"
-                      className="text-white border-white/20"
                       placeholder="Please enter album name"
                       {...field}
                     />
@@ -119,9 +118,7 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
                   name="thumbnail"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">
-                        Upload thumbnail
-                      </FormLabel>
+                      <FormLabel>Upload thumbnail</FormLabel>
                       <FormControl>
                         <InputSingleFile
                           accept="image/*"
@@ -143,7 +140,7 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
                 />
               </div>
             </div>
-            <Button className="float-end" variant="secondary" type="submit">
+            <Button className="float-end" variant="default" type="submit">
               Create
             </Button>
           </form>

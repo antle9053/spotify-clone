@@ -6,7 +6,11 @@ import useUpdateQueryParams from "./useUpdateQueryParams";
 
 const PAGE_SIZE = 5;
 
-export const useTableSongs = () => {
+interface UseTableSongsProps {
+  albumId?: string;
+}
+
+export const useTableSongs = ({ albumId }: UseTableSongsProps) => {
   const [page, setPage] = useState(1);
   const [songs, setSongs] = useState<Song[]>([]);
   const [totalPage, setTotalPage] = useState(1);
@@ -27,10 +31,16 @@ export const useTableSongs = () => {
     const fetchTotalPage = async () => {
       console.log("a");
       if (artistDetails && artistDetails.id) {
-        const { count } = await supabaseClient
+        let query = supabaseClient
           .from("songs")
           .select("*", { count: "exact", head: true })
           .eq("author_id", artistDetails.id);
+
+        if (albumId) {
+          query = query.eq("album_id", albumId);
+        }
+
+        const { count } = await query;
 
         const totalPage = Math.ceil((count ?? 1) / PAGE_SIZE);
 
@@ -38,7 +48,7 @@ export const useTableSongs = () => {
       }
     };
     void fetchTotalPage();
-  }, [artistDetails]);
+  }, [artistDetails, albumId]);
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -48,11 +58,16 @@ export const useTableSongs = () => {
           const from = (page - 1) * PAGE_SIZE;
           const to = page * PAGE_SIZE - 1;
 
-          const { data, error } = await supabaseClient
+          let query = supabaseClient
             .from("songs")
             .select("*, albums(album_name)")
-            .eq("author_id", artistDetails.id)
-            .range(from, to);
+            .eq("author_id", artistDetails.id);
+
+          if (albumId) {
+            query = query.eq("album_id", albumId);
+          }
+
+          const { data, error } = await query.range(from, to);
 
           if (error) {
             console.error(error);
@@ -67,7 +82,7 @@ export const useTableSongs = () => {
       }
     };
     fetchSongs();
-  }, [artistDetails, page]);
+  }, [artistDetails, page, albumId]);
 
   const handleNextPage = () => {
     updateQueryParams({ page: page + 1 });

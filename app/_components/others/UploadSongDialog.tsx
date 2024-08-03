@@ -1,4 +1,9 @@
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "../ui/dialog";
 import { FC, ReactNode, useEffect } from "react";
 import { z } from "zod";
 import { Separator } from "@/app/_components/ui/separator";
@@ -113,24 +118,28 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
       </DialogTrigger>
       <DialogContent
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className="sm:max-w-[700px] max-h-full bg-neutral-900 border-0 overflow-y-auto"
+        className="sm:max-w-[700px] max-h-full border-0 overflow-y-auto"
       >
-        <h1 className="text-white text-2xl font-semibold">Upload song</h1>
-        <Separator className="my-3 bg-white/10" />
+        <DialogHeader>
+          <h1 className="text-2xl font-semibold">
+            {type === "update" ? "Update song" : "Upload song"}
+          </h1>
+        </DialogHeader>
+        <Separator className="bg-black/10" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="flex flex-col md:flex-row justify-between gap-2">
-              <div className="flex-grow basis-[300px]">
+              <div className="flex-grow basis-0 md:basis-[300px]">
                 <FormField
                   control={form.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel className="text-white">Song title</FormLabel>
+                      <FormLabel>Song title</FormLabel>
                       <FormControl>
                         <Input
                           autoComplete="off"
-                          className="text-white border-white/20 w-[300px]"
+                          className="md:w-[300px] w-full"
                           placeholder="Please enter song title"
                           {...field}
                         />
@@ -143,13 +152,13 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                   )}
                 />
               </div>
-              <div className="flex-grow basis-[300px]">
+              <div className="flex-grow basis-0 md:basis-[300px]">
                 <FormField
                   control={form.control}
                   name="album"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">Album</FormLabel>
+                      <FormLabel>Album</FormLabel>
                       <FormControl>
                         <SelectAlbum
                           setValue={(value) => form.setValue("album", value)}
@@ -172,9 +181,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                   name="thumbnail"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">
-                        Upload thumbnail
-                      </FormLabel>
+                      <FormLabel>Upload thumbnail</FormLabel>
                       <FormControl>
                         <InputSingleFile
                           accept="image/*"
@@ -201,14 +208,14 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                   name="song"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-white">Upload song</FormLabel>
+                      <FormLabel>Upload song</FormLabel>
                       <FormControl>
                         <InputAudioFile
                           setValue={(value) => form.setValue("song", value)}
                           setOuterDuration={(value) =>
                             form.setValue("duration", value)
                           }
-                          className="text-white w-[300px]"
+                          className="w-[300px]"
                           defaultValue={
                             type === "update" ? song?.song_path : ""
                           }
@@ -227,7 +234,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
                 />
               </div>
             </div>
-            <Button className="float-end" variant="secondary" type="submit">
+            <Button className="float-end" variant="default" type="submit">
               Upload
             </Button>
           </form>

@@ -1,22 +1,25 @@
 import Image from "next/image";
 import { TableCell, TableRow } from "../ui/table";
-import { FC, useState } from "react";
-import { formatDuration } from "@/app/_helpers/formatDuration";
+import { FC } from "react";
 import { Edit2 } from "lucide-react";
-import { ConfirmDeleteSongDialog } from "./Dialogs/ConfirmDeleteSong";
-import { UploadSongDialog } from "@/app/_components/others/UploadSongDialog";
 import { Album } from "@/app/_types/album";
+import { useRouter, usePathname } from "next/navigation";
 
 interface TableAlbumItemProps {
   album: Album;
 }
 
 export const TableAlbumItem: FC<TableAlbumItemProps> = ({ album }) => {
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
-    <TableRow className="border-white/10">
+    <TableRow
+      className="border-white/10 cursor-pointer"
+      onClick={() => {
+        router.push(`${pathname}/${album.id}`);
+      }}
+    >
       <TableCell className="font-medium text-white" width="64px">
         <Image
           src={

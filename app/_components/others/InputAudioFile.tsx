@@ -29,7 +29,7 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
   const previewRef = useRef<HTMLDivElement>(null);
   const [preview, setPreview] = useState<string>("");
   const [duration, setDuration] = useState<number | null>(
-    defaultDuration ?? null,
+    defaultDuration ?? null
   );
   const [name, setName] = useState<string>(defaultName ?? "");
 
@@ -66,8 +66,8 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
   return (
     <div
       className={cn(
-        "border border-solid border-white/20 rounded-md p-4",
-        className,
+        "border border-solid border-black/20 rounded-md p-4",
+        className
       )}
     >
       <Input
@@ -92,7 +92,7 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
       ></Input>
       {preview || defaultValue ? (
         <div className="w-full h-full relative">
-          <div className="w-full h-full flex justify-between items-center bg-white rounded-md p-2 relative">
+          <div className="w-full h-full flex justify-between items-center bg-white border-black/30 border gap-2 rounded-md p-2 relative">
             {preview ? (
               <Button
                 className="absolute -top-[10px] -right-[10px] w-[20px] h-[20px] rounded-full"
@@ -130,7 +130,7 @@ export const InputAudioFile: FC<InputAudioFileProps> = ({
         </div>
       ) : (
         <div
-          className="h-[60px] w-full flex items-center justify-center border border-dashed border-white/30 cursor-pointer"
+          className="h-[60px] w-full flex items-center justify-center border border-dashed border-black/30 cursor-pointer"
           onClick={handleAreaClick}
         >
           <p className="text-muted-foreground text-sm">Upload</p>

@@ -31,8 +31,8 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
   return (
     <div
       className={cn(
-        "border border-solid border-white/20 rounded-md p-4",
-        className,
+        "border border-solid border-black/20 rounded-md p-4",
+        className
       )}
     >
       <Input
@@ -109,7 +109,7 @@ export const InputSingleFile: FC<InputSingleFileProps> = ({
         </div>
       ) : (
         <div
-          className="h-full w-full flex items-center justify-center border border-dashed border-white/30 cursor-pointer"
+          className="h-full w-full flex items-center justify-center border border-dashed border-black/30 cursor-pointer"
           onClick={handleAreaClick}
         >
           <p className="text-muted-foreground text-sm">Upload</p>

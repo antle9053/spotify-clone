@@ -40,11 +40,9 @@ export const SelectAlbum: FC<SelectAlbumProps> = ({ setValue }) => {
     void fetchAlbums();
   }, []);
 
-  console.log(albums);
-
   return (
     <Select onValueChange={(e) => setValue(e)}>
-      <SelectTrigger className="w-[300px] h-[36px]">
+      <SelectTrigger className="md:w-[300px] w-full">
         <SelectValue placeholder="Select an album" />
       </SelectTrigger>
       <SelectContent>

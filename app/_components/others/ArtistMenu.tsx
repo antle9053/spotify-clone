@@ -61,7 +61,7 @@ export function ArtistMenu() {
           Icon={item.Icon}
           label={item.label}
           href={item.href}
-          active={pathname === `/artist${item.href}`}
+          active={pathname.includes(`/artist${item.href}`)}
         />
       ))}
     </nav>

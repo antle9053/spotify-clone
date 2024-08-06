@@ -32,15 +32,16 @@ export const TableSongs: FC<TableSongProps> = ({ albumId }) => {
           <TableRow className="border-white/10">
             <TableHead>Image</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Album</TableHead>
+            {!albumId ? <TableHead>Album</TableHead> : null}
             <TableHead>Duration</TableHead>
+            <TableHead>Created time</TableHead>
             <TableHead className="text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody className="min-h-">
           {songs.map((song, index) => (
-            <TableSongItem key={index} song={song} />
+            <TableSongItem key={index} song={song} isAlbumDetail={!!albumId} />
           ))}
         </TableBody>
       </Table>

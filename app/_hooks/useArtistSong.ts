@@ -71,7 +71,8 @@ export const useArtistSong = () => {
               author_id: artistDetails?.id,
               album_id: album && album !== "none" ? album : null,
             })
-            .eq("id", songId);
+            .eq("id", songId)
+            .select();
 
           errorSubmit = error;
         }

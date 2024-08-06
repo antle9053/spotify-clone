@@ -6,12 +6,17 @@ import { formatDuration } from "@/app/_helpers/formatDuration";
 import { Edit2 } from "lucide-react";
 import { ConfirmDeleteSongDialog } from "./Dialogs/ConfirmDeleteSong";
 import { UploadSongDialog } from "@/app/_components/others/UploadSongDialog";
+import moment from "moment";
 
 interface TableSongItemProps {
   song: Song;
+  isAlbumDetail?: boolean;
 }
 
-export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
+export const TableSongItem: FC<TableSongItemProps> = ({
+  song,
+  isAlbumDetail = false,
+}) => {
   const [openDelete, setOpenDelete] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
 
@@ -30,11 +35,16 @@ export const TableSongItem: FC<TableSongItemProps> = ({ song }) => {
         />
       </TableCell>
       <TableCell className="text-white">{song.title}</TableCell>
-      <TableCell className="text-white">
-        {song.album?.album_name ?? ""}
-      </TableCell>
+      {!isAlbumDetail ? (
+        <TableCell className="text-white">
+          {song.album?.album_name ?? ""}
+        </TableCell>
+      ) : null}
       <TableCell className="text-white">
         {formatDuration(song.duration)}
+      </TableCell>
+      <TableCell className="text-white">
+        {moment(song.created_at).format("HH:mm:ss DD-MM-YYYY")}
       </TableCell>
       <TableCell className="text-right text-white">
         <div className="flex gap-4 justify-end items-center">

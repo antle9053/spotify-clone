@@ -29,7 +29,6 @@ export const useTableSongs = ({ albumId }: UseTableSongsProps) => {
 
   useEffect(() => {
     const fetchTotalPage = async () => {
-      console.log("a");
       if (artistDetails && artistDetails.id) {
         let query = supabaseClient
           .from("songs")
@@ -61,7 +60,8 @@ export const useTableSongs = ({ albumId }: UseTableSongsProps) => {
           let query = supabaseClient
             .from("songs")
             .select("*, albums(album_name)")
-            .eq("author_id", artistDetails.id);
+            .eq("author_id", artistDetails.id)
+            .order("created_at", { ascending: false });
 
           if (albumId) {
             query = query.eq("album_id", albumId);
@@ -81,7 +81,7 @@ export const useTableSongs = ({ albumId }: UseTableSongsProps) => {
         setLoading(false);
       }
     };
-    fetchSongs();
+    void fetchSongs();
   }, [artistDetails, page, albumId]);
 
   const handleNextPage = () => {

@@ -18,9 +18,7 @@ export const useArtistAlbum = () => {
   ) => {
     try {
       if (artistDetails && artistDetails.id) {
-        console.log(artistDetails.id);
         const { title, thumbnail } = values;
-
         let thumbnail_path = "";
         let errorUploadThumbnail;
         let errorSubmit;
@@ -48,14 +46,14 @@ export const useArtistAlbum = () => {
           errorSubmit = error;
         } else if (type === "update") {
           const { error } = await supabaseClient
-            .from("songs")
+            .from("albums")
             .update({
-              title,
+              ...(title && { album_name: title }),
               ...(thumbnail_path && { thumbnail_path }),
-              author_id: artistDetails?.id,
-              album_id: null,
+              artist_id: artistDetails?.id,
             })
-            .eq("id", albumId);
+            .eq("id", albumId)
+            .select();
 
           errorSubmit = error;
         }

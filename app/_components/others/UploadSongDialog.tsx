@@ -235,7 +235,7 @@ export const UploadSongDialog: FC<UploadSongDialogProps> = ({
               </div>
             </div>
             <Button className="float-end" variant="default" type="submit">
-              Upload
+              {type === "upload" ? "Upload" : "Update"}
             </Button>
           </form>
         </Form>

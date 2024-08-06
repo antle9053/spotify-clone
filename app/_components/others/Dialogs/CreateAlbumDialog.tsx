@@ -16,10 +16,10 @@ import { InputSingleFile } from "@/app/_components/others/InputSingleFile";
 import { Button } from "@/app/_components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Song } from "@/app/_types/song";
 import { useArtistAlbum } from "@/app/_hooks/useArtistAlbum";
+import { Album } from "@/app/_types/album";
 
-export type songDialogType = "upload" | "update";
+export type albumDialogType = "upload" | "update";
 
 const THUMBNAIL_MAX_UPLOAD_SIZE = 1024 * 1024 * 2; // 2MB;
 
@@ -27,8 +27,8 @@ interface CreateAlbumDialogProps {
   triggerElement?: ReactNode;
   open: boolean;
   handleOpenChange: (open: boolean) => void;
-  type: songDialogType;
-  song?: Song;
+  type: albumDialogType;
+  album?: Album;
 }
 
 export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
@@ -36,7 +36,7 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
   open,
   handleOpenChange,
   type,
-  song,
+  album,
 }) => {
   const formSchema = z.object({
     title:
@@ -58,7 +58,7 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: type === "update" ? song?.title : "",
+      title: type === "update" ? album?.album_name : "",
       thumbnail: undefined,
     },
   });
@@ -66,7 +66,7 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
   const { createAlbum } = useArtistAlbum();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    await createAlbum(values, type, "");
+    await createAlbum(values, type, album?.id ?? "");
     handleOpenChange(false);
   };
 
@@ -89,7 +89,9 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
         onOpenAutoFocus={(e) => e.preventDefault()}
         className="sm:max-w-[350px] max-h-full border-0 overflow-y-auto"
       >
-        <h1 className="text-2xl font-semibold">Create album</h1>
+        <h1 className="text-2xl font-semibold">
+          {type === "upload" ? "Create album" : "Update album"}
+        </h1>
         <Separator className="bg-black/10" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -127,7 +129,7 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
                           }
                           className="w-[300px] h-[300px]"
                           defaultValue={
-                            type === "update" ? song?.thumbnail_path : ""
+                            type === "update" ? album?.thumbnail_path : ""
                           }
                         />
                       </FormControl>
@@ -141,7 +143,7 @@ export const CreateAlbumDialog: FC<CreateAlbumDialogProps> = ({
               </div>
             </div>
             <Button className="float-end" variant="default" type="submit">
-              Create
+              {type === "update" ? "Update" : "Create"}
             </Button>
           </form>
         </Form>

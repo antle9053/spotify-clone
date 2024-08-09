@@ -11,7 +11,10 @@ import { Player } from "@/app/_components/layout/Player";
 
 const fontSans = FontSans({
   subsets: ["latin"],
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
   variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -29,8 +32,8 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "min-h-screen h-screen bg-black font-sans antialiased",
-          fontSans.variable,
+          "min-h-screen h-screen bg-black antialiased",
+          fontSans.className,
         )}
       >
         <SupabaseProvider>
